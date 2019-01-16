@@ -97,7 +97,7 @@ export class NgxElectronDataService {
                     () => complete()));
             return win2;
         } else {
-            this.router.navigateByUrl(routerUrl);
+            webHandler();
         }
     }
 }
