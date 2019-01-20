@@ -2,7 +2,7 @@ import {Inject, Injectable, NgZone} from '@angular/core';
 import {Action, Store} from '@ngrx/store';
 import {Router} from '@angular/router';
 import {concat, Observable} from 'rxjs';
-import {NgxElectronService, OPTIONS, ElectronCoreOptions} from '@ngx-electron/core';
+import {NgxElectronService} from '@ngx-electron/core';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +11,7 @@ export class NgxElectronDataService {
     constructor(private store$: Store<any>,
                 private ngZone: NgZone,
                 private router: Router,
-                private electronService: NgxElectronService,
-                @Inject(OPTIONS) private options: ElectronCoreOptions) {
+                private electronService: NgxElectronService) {
         this.electronService.ipcRenderer.on(`ngx-electron-action-shared-${this.electronService.remote.getCurrentWindow().id}`,
             (event, action) => this.ngZone.run(() => this.store$.dispatch(action)));
         this.electronService.ipcRenderer.send(`ngx-electron-win-init-${this.electronService.remote.getCurrentWindow().id}`);
@@ -20,14 +19,10 @@ export class NgxElectronDataService {
 
     /**
      * 发送action id用来指定要发送的win对象 需要指定
-     * @param action
-     * @param ids
      */
     dispatch(action: Action, ...ids: number[]);
     /**
      * 发送action key用来指定要发送的win对象 调用此方法需要主进程初始化@ngx-electron/electron-main模块
-     * @param action
-     * @param keys
      */
     dispatch(action: Action, ...keys: string[]);
 
