@@ -1,6 +1,11 @@
 {
     "name": "@ngx-electron/data",
     "version": "0.0.1",
+    "author": "liangshen001",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ngx-electron/core.git"
+    },
     "peerDependencies": {
         "@ngx-electron/core": "0.0.1",
         "@ngx-electron/main": "0.0.1",
@@ -11,5 +16,9 @@
         "electron-updater": "^3.1.2",
         "@angular/common": "^7.0.0",
         "@angular/core": "^7.0.0"
-    }
+    },
+    "keywords": [
+        "angular",
+        "electron"
+    ]
 }
