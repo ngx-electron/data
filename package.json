@@ -1,10 +1,18 @@
 {
     "name": "@ngx-electron/data",
     "version": "0.0.1",
-    "author": "liangshen001",
+    "author": {
+        "name": "liangshen001",
+        "email": "wangliang520wl@hotmail.com"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ngx-electron/data/issues"
+    },
+    "homepage": "https://github.com/ngx-electron/data#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/ngx-electron/core.git"
+        "url": "git+https://github.com/ngx-electron/data.git"
     },
     "peerDependencies": {
         "@ngx-electron/core": "0.0.1",
