@@ -12,9 +12,12 @@ export class NgxElectronDataService {
                 private ngZone: NgZone,
                 private router: Router,
                 private electronService: NgxElectronService) {
-        this.electronService.ipcRenderer.on(`ngx-electron-action-shared-${this.electronService.remote.getCurrentWindow().id}`,
-            (event, action) => this.ngZone.run(() => this.store$.dispatch(action)));
-        this.electronService.ipcRenderer.send(`ngx-electron-win-init-${this.electronService.remote.getCurrentWindow().id}`);
+        if (this.electronService.isElectron()) {
+            const winId = this.electronService.remote.getCurrentWindow().id;
+            this.electronService.ipcRenderer.on(`ngx-electron-action-shared-${winId}`,
+                (event, action) => this.ngZone.run(() => this.store$.dispatch(action)));
+            this.electronService.ipcRenderer.send(`ngx-electron-win-init-${winId}`);
+        }
     }
 
     /**
