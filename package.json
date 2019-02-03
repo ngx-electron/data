@@ -15,7 +15,7 @@
         "url": "git+https://github.com/ngx-electron/data.git"
     },
     "peerDependencies": {
-        "@ngx-electron/core": "0.0.2",
+        "@ngx-electron/core": "0.0.3",
         "@ngx-electron/main": "0.0.4",
         "@ngrx/store": "6.0.1",
         "electron": "2.0.3",
