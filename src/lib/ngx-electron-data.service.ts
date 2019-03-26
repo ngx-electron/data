@@ -1,12 +1,11 @@
-import {Inject, Injectable, NgZone} from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import {Action, Store} from '@ngrx/store';
 import {Router} from '@angular/router';
 import {concat, Observable} from 'rxjs';
-import {NgxElectronService} from '@ngx-electron/core';
+import {NgxElectronService, ParentParams} from '@ngx-electron/core';
+import {BrowserWindow, BrowserWindowConstructorOptions} from 'electron';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class NgxElectronDataService {
     constructor(private store$: Store<any>,
                 private ngZone: NgZone,
@@ -57,25 +56,24 @@ export class NgxElectronDataService {
         }
     }
 
-    openPage(routerUrl: string, options: any/*BrowserWindowConstructorOptions*/ = {}, {
+    openPage(routerUrl: string, options: BrowserWindowConstructorOptions = {}, {
         key = routerUrl,
-        actions = [],
+        actions,
         webHandler = () => this.router.navigateByUrl(routerUrl),
-        complete = () => {},
-        created = () => {}
+        complete,
+        created,
+        parent
     }: {
         key?: string,
         actions?: Observable<Action>[],
         webHandler?: () => void,
         complete?: () => void,
-        created?: (any) => void
+        created?: (any) => void,
+        parent?: ParentParams
     } = {
         key: routerUrl,
-        actions: [],
-        webHandler: () => this.router.navigateByUrl(routerUrl),
-        complete: () => {},
-        created: () => {}
-    }): any/*BrowserWindow*/ {
+        webHandler: () => this.router.navigateByUrl(routerUrl)
+    }): BrowserWindow {
         if (this.electronService.isElectron()) {
             if (this.electronService.isLoadElectronMain) {
                 const winId = this.electronService.getWinIdByKey(key);
@@ -86,13 +84,22 @@ export class NgxElectronDataService {
                     return win;
                 }
             }
+            if (parent) {
+                let parentWinId;
+                if (!parent.winId) {
+                    parentWinId = this.electronService.getWinIdByKey(parent.winKey);
+                }
+                if (parentWinId) {
+                    options.parent = this.electronService.remote.BrowserWindow.fromId(parentWinId);
+                }
+            }
             const win2 = this.electronService.createWindow(routerUrl, key, options, created);
             console.log(`创建窗口成功`);
             this.electronService.remote.ipcMain.on(`ngx-electron-win-init-${win2.id}`, event =>
-                concat(...actions).subscribe(action =>
+                actions && concat(...actions).subscribe(action =>
                         win2.webContents.send(`ngx-electron-action-shared-${win2.id}`, action),
                     () => {},
-                    () => complete()));
+                    () => complete && complete()));
             return win2;
         } else {
             webHandler();
