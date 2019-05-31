@@ -68,7 +68,7 @@ export class NgxElectronDataService {
         actions?: Observable<Action>[],
         webHandler?: () => void,
         complete?: () => void,
-        created?: (any) => void,
+        created?: (win: BrowserWindow) => void,
         parent?: ParentParams
     } = {
         key: routerUrl,
@@ -93,7 +93,10 @@ export class NgxElectronDataService {
                     options.parent = this.electronService.remote.BrowserWindow.fromId(parentWinId);
                 }
             }
-            const win2 = this.electronService.createWindow(routerUrl, key, options, created);
+            const win2 = this.electronService.createWindow(routerUrl, key, options);
+            if (created) {
+                created(win2);
+            }
             console.log(`创建窗口成功`);
             this.electronService.remote.ipcMain.on(`ngx-electron-win-init-${win2.id}`, event =>
                 actions && concat(...actions).subscribe(action =>
